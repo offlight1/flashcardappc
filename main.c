@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <string.h>
 
 /*1. while loop and wait for user input
 2. feature to add flashcards
@@ -18,13 +18,14 @@
 struct Flashcard{
 	char term[MAXTERMLEN];
 	char definition[MAXDEFINITION];
-}
+};
 
-void add_flashcard;
-void edit_flashcard;
-void remove_flashcard;
-void view_allcards;
-void study_flashcards;
+void add_flashcard();
+void edit_flashcard();
+void flashcard_editor(int card);
+void remove_flashcard();
+void view_allcards();
+void study_flashcards();
 
 struct Flashcard flashcards[MAXFLASHCARDS];
 
@@ -68,10 +69,47 @@ void add_flashcard() {
 	if (card_count < MAXFLASHCARDS){
 		printf("Enter the term:\n");
 		scanf(" %[^\n]", flashcards[card_count].term);
-		printf("Enter the term definition:\n")
+		printf("Enter the term definition:\n");
 		scanf(" %[^\n]", flashcards[card_count].definition);
 
 		card_count++;
 	} 
 	else printf("Max amount of flashcards reached\n");
+}
+
+void edit_flashcard() {
+	int card_found = 0;
+	char input_term[MAXTERMLEN];
+
+	printf("Enter the term for the flashcard you wish to edit:\n");
+	scanf(" %[^\n]", input_term);
+
+	for (int i=0;i<card_count;i++) {
+		if (strcmp(input_term, flashcards[i].term) == 0) {
+			flashcard_editor(i);
+			card_found = 1;
+			break;
+		}
+	}
+	if (!card_found) {
+		printf("No flashcard found\n");
+	}
+}
+
+void flashcard_editor(int card) {
+	int input;
+	printf("Would you like to edit the 1. term or 2. definition?\n");
+	scanf("%d\n", &input);
+
+	if (input == 1) {
+		printf("Enter the new term: ");
+		scanf(" %[^\n]", flashcards[card].term);
+		printf("Flash card updated\n");
+	}
+	else if (input == 2) {
+		printf("Enter the new term definition:\n");
+		scanf(" %[^\n]", flashcards[card].definition);
+		printf("Flash card updated\n");
+	}
+	else printf("Invalid input\n");
 }
