@@ -2,7 +2,7 @@
 #include <string.h>
 
 /*1. while loop and wait for user input
-2. feature to add flashcards
+2. feature to add flashcards and edit
 3. feature to delete flashcards
 4. feature to view all flashcards in the deck
 5. feature to study the flash cards
@@ -12,8 +12,8 @@
  then display accuracy of the original run.) */
 
 #define MAXFLASHCARDS 30
-#define MAXTERMLEN 20
-#define MAXDEFINITION 40
+#define MAXTERMLEN 40
+#define MAXDEFINITION 500
 
 struct Flashcard{
 	char term[MAXTERMLEN];
@@ -29,13 +29,13 @@ void study_flashcards();
 
 struct Flashcard flashcards[MAXFLASHCARDS];
 
-int user_choice;
+char user_choice;
 int card_count = 0;
 
 int main() {
 	while (1){
 		printf("What would you like to do? 1. Add a flashcard 2. Edit a flashcard 3. Remove a flashcard 4. View all your cards 5. Study your cards 6. Exit\n");
-		scanf("%d\n", &user_choice);
+		scanf(" %c", &user_choice);
 
 	switch (user_choice){
 	case '1':
@@ -55,7 +55,7 @@ int main() {
 		break;
 
 	case '5':
-		study_flashcards();
+		printf("not available");
 		break;
 
 	case '6':
@@ -91,25 +91,57 @@ void edit_flashcard() {
 			break;
 		}
 	}
-	if (!card_found) {
+	if (!card_found)
 		printf("No flashcard found\n");
-	}
 }
 
 void flashcard_editor(int card) {
-	int input;
+	char input;
 	printf("Would you like to edit the 1. term or 2. definition?\n");
-	scanf("%d\n", &input);
+	scanf(" %c", &input);
 
-	if (input == 1) {
+	if (input == '1') {
 		printf("Enter the new term: ");
 		scanf(" %[^\n]", flashcards[card].term);
 		printf("Flash card updated\n");
 	}
-	else if (input == 2) {
+	else if (input == '2') {
 		printf("Enter the new term definition:\n");
 		scanf(" %[^\n]", flashcards[card].definition);
 		printf("Flash card updated\n");
 	}
 	else printf("Invalid input\n");
+}
+
+void remove_flashcard() {
+	char input_card[MAXTERMLEN];
+	int card_found = 0;
+
+	printf("Enter the term of the flashcard you wish to remove:\n");
+	scanf(" %[^\n]", input_card);
+
+	for (int i=0; i<card_count;i++) {
+		if (strcmp(input_card, flashcards[i].term) == 0) {
+			printf("Card found, deleting now.\n");
+			card_found = 1;
+
+			for (int j=i; j<card_count - 1; j++) {
+				flashcards[j] = flashcards[j + 1];
+			}
+
+			printf("Deleted flashcard.\n");
+			card_count--;
+		}
+	}
+
+	if (!card_found)
+		printf("Flashcard was not found.\n");
+}
+
+void view_allcards() {
+	for (int i=0; i<card_count; i++) {
+		printf("Term: %s\n", flashcards[i].term);
+		printf("Definition: %s\n", flashcards[i].definition);
+		printf("------------------------------\n");
+	}
 }
