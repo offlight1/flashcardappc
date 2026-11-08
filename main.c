@@ -18,6 +18,7 @@
 struct Flashcard{
 	char term[MAXTERMLEN];
 	char definition[MAXDEFINITION];
+	char known;
 };
 
 void add_flashcard();
@@ -28,6 +29,7 @@ void view_allcards();
 void study_flashcards();
 
 struct Flashcard flashcards[MAXFLASHCARDS];
+
 
 char user_choice;
 int card_count = 0;
@@ -55,7 +57,7 @@ int main() {
 		break;
 
 	case '5':
-		printf("not available");
+		study_flashcards();
 		break;
 
 	case '6':
@@ -71,6 +73,7 @@ void add_flashcard() {
 		scanf(" %[^\n]", flashcards[card_count].term);
 		printf("Enter the term definition:\n");
 		scanf(" %[^\n]", flashcards[card_count].definition);
+		flashcards[card_count].known = 'n';
 
 		card_count++;
 	} 
@@ -144,4 +147,43 @@ void view_allcards() {
 		printf("Definition: %s\n", flashcards[i].definition);
 		printf("------------------------------\n");
 	}
+}
+
+void study_flashcards() {
+
+	int total_studied = 0;
+	int total_known = 0;
+
+	for (int i = 0; i < card_count; i++) {
+
+		if (flashcards[i].known == 'n') {
+			char input;
+
+			printf("Term: %s\n", flashcards[i].term);
+			printf("Do you know this term? (y/n):\n");
+			scanf(" %c", &input);
+
+			if (input == 'y') {
+				flashcards[i].known = 'y';
+				total_known++;
+			}
+
+			else if (input == 'n') {
+				printf("That's fine, you'll get it next time.\n");
+				printf("The definition is: %s\n", flashcards[i].definition);
+			}
+
+			else
+				printf("Invalid Input.\n");
+
+			total_studied++;
+		}
+	}
+
+
+	float total_known_dec = (float) total_known;
+	float total_studied_dec = (float) total_studied;
+
+	printf("Total terms known: %d\n", total_known);
+	printf("Percent of cards known: %.2f\n", ((total_known_dec / total_studied_dec) * 100));
 }
